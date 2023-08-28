@@ -9,8 +9,14 @@ const loadPhone = async (searchText, isShowAll) => {
 
 const displayPhones = (phones, isShowAll) => {
   const phoneContainer = document.getElementById("phone-container");
-  //   clear phone container
+  const showError = document.getElementById("show-error");
   phoneContainer.textContent = "";
+  showError.textContent = "";
+  // throw en error
+  if (!phones.length > 0) {
+    showError.innerHTML = `<h1 class = "text-center text-3xl mt-10" >No Data Available! Please Search Again!</h1>`;
+  }
+  //   clear phone container
 
   // display show all button if there are more than 12 phones
   const showAllBtn = document.getElementById("show-all-btn");
@@ -51,12 +57,37 @@ const displayPhones = (phones, isShowAll) => {
 
 // handle show details
 const handleShowDetails = async (id) => {
-  console.log(id);
   const res = await fetch(
     `https://openapi.programming-hero.com/api/phone/${id}`
   );
   const data = await res.json();
-  console.log(data);
+  const phone = data.data;
+  showPhoneDetails(phone);
+};
+
+const showPhoneDetails = (phone) => {
+  show_details_modal.showModal();
+
+  const phoneDetailsContainer = document.getElementById(
+    "phone-details-container"
+  );
+  phoneDetailsContainer.innerHTML = `
+  <img class= "width-1/2 mx-auto" src="${phone.image}" alt="">
+      <h1 class = text-3xl>${phone?.name || " No Name Available!"}</h1>
+      <p class = "my-5">${
+        phone?.releaseDate || " No Release Date Available!"
+      }</p>
+      <p class = "my-5">${
+        phone?.mainFeatures?.chipSet || " No ChipSet Data Available!"
+      }</p>
+      <p class = "my-5">${
+        phone?.mainFeatures?.memory || " No Memory Data Available!"
+      }</p>
+      <p class = "mt-5">${
+        phone?.mainFeatures.storage || " No Storage Data Available!"
+      }</p>
+
+  `;
 };
 
 // handle search event
